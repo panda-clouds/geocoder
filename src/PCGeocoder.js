@@ -159,12 +159,13 @@ class PCGeocoder  {
 							console.log("first " + JSON.stringify(first))
 							const street = PCGeocoder.streetFromNumberAndName(first.streetNumber,first.streetName);
 							if(!street) return; // Not Specific enough
-							object.street = street;
+							first.street = street;
 							// eslint-disable-next-line no-console
 							console.log("yes street")
 							if(!first || first.latitude == 0 || first.longitude == 0) return ; // not a valid place
-
-							whole = object;
+							// eslint-disable-next-line no-console
+							console.log("yes lat long")
+							whole = first;
 							raw = object.raw;
 							lat = first.latitude;
 							long = first.longitude;

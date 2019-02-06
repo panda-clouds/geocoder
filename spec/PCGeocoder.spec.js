@@ -83,8 +83,8 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 					expect(result).toBeDefined();
 					expect(result.lat.toString()).toContain(expectedLat);
 					expect(result.long.toString()).toContain(expectedLong);
-					expect(result.address[0].latitude.toString()).toContain(expectedLat);
-					expect(result.address[0].longitude.toString()).toContain(expectedLong);
+					expect(result.address.latitude.toString()).toContain(expectedLat);
+					expect(result.address.longitude.toString()).toContain(expectedLong);
 				})
 				.then(done).catch(done.fail);
 		}, 10 * 1000);
@@ -102,8 +102,8 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 					expect(result).toBeDefined();
 					expect(result.lat.toString()).toContain(expectedLat);
 					expect(result.long.toString()).toContain(expectedLong);
-					expect(result.address[0].latitude.toString()).toContain(expectedLat);
-					expect(result.address[0].longitude.toString()).toContain(expectedLong);
+					expect(result.address.latitude.toString()).toContain(expectedLat);
+					expect(result.address.longitude.toString()).toContain(expectedLong);
 				})
 				.then(done).catch(done.fail);
 		}, 10 * 1000);
