@@ -1,5 +1,11 @@
 const PCGeocoder = require("../src/PCGeocoder.js");
-require("../apiKeys.js")();
+try{
+	require("../apiKeys.js")();
+}catch(e){
+	// It's ok if we don't load the keys from the apiKeys file
+	// In CI we load directly
+}
+
 
 // const street = "414 N Rock St";
 // 	const city = "Gilbert";
