@@ -1,4 +1,5 @@
 var PCNodeGeocoder = require('node-geocoder');
+var PCAddressFormatter = require('@panda-clouds/address-formatter');
 
 class PCGeocoder  {
 
@@ -6,19 +7,20 @@ class PCGeocoder  {
 	//Empty Constructor
 	}
 	static streetFromNumberAndName(number,name){
+		let best = "";
 		if(number && name){
 			// most return seperated
-			return number + ' ' + name;
+			best = number + ' ' + name;
 		}else if(name){
 			// mapquest only returns 'name'
-			return name;
+			best = name;
 		}else if(number){
 			// not likely
-			return number;
+			best = number;
 		}
 
 		// no results
-		return null;
+		return PCAddressFormatter.street(best);
 
 	}
 	// primaryProviders are attemped before "free services"
