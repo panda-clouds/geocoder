@@ -49,9 +49,12 @@ class PCGeocoder  {
 		if(this.primaryProvidersArray) all = all.concat(this.primaryProvidersArray)
 
 		if(this.disableFreeServices != true){
-			// then try free services
+			// then try free services 3x
 			all.push({ provider: 'openstreetmap' })
-			all.push({ provider: 'datasciencetoolkit'})
+			all.push({ provider: 'openstreetmap' })
+			all.push({ provider: 'openstreetmap' })
+			// datasciencetoolkit doesnt work
+			// all.push({ provider: 'datasciencetoolkit'})
 		}
 
 		// then try backup services
