@@ -1,0 +1,31 @@
+{
+  "devDependencies": {
+    "eslint": "^4.18.1",
+    "eslint-plugin-jasmine": "^2.10.1",
+    "jasmine": "^3.1.0"
+  },
+  "dependencies": {
+    "node-geocoder": "^3.22.0"
+  },
+  "scripts": {
+    "pretest": "eslint .",
+    "test": "jasmine ./spec/*.spec.js"
+  },
+  "name": "@panda-clouds/geocoder",
+  "description": "Get coordinates from addresses",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panda-clouds/geocoder.git"
+  },
+  "author": {
+    "name": "Marc Smith",
+    "email": "mr.marcsmith@me.com",
+    "url": "https://github.com/mrmarcsmith"
+  },
+  "license": "MIT",
+  "main": "src/PCGeocoder.js",
+  "engines": {
+    "node": ">= 8"
+  }
+}

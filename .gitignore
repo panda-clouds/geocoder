@@ -1,0 +1,6 @@
+
+.DS_Store
+node_modules
+# This file contains the api keys used for testing
+# They are provate and should never be pushed to the repo
+apiKeys.js
