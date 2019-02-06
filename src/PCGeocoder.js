@@ -77,8 +77,8 @@ class PCGeocoder  {
 		this.country = input;
 	}
 
-	zip(input) {
-		this.zip = input
+	zipcode(input) {
+		this.zipcode = input
 	}
 
 	addressObjectForOptions(options){
@@ -89,13 +89,13 @@ class PCGeocoder  {
 			if(this.city)addrObject.city = this.city;
 			if(this.state)addrObject.state = this.state;
 			if(this.country)addrObject.country = this.country;
-			if(this.zip)addrObject.zipcode = this.zip;
+			if(this.zipcode)addrObject.zipcode = this.zipcode;
 		}else{
 			if(this.street)addrObject.address = this.street;
 			if(this.city)addrObject.city = this.city;
 			if(this.state)addrObject.state = this.state;
 			if(this.country)addrObject.country = this.country;
-			if(this.zip)addrObject.zipcode = this.zip;
+			if(this.zipcode)addrObject.zipcode = this.zipcode;
 		}
 		return addrObject;
 	}

@@ -45,7 +45,7 @@ describe('Block Non-house level input', () => {
 	it('should NOT geocode Zip only', (done) => {
 
 		const geo = new PCGeocoder();
-		geo.zip("85234");
+		geo.zipcode("85234");
 
 		geo.search()
 			.then(done.fail).catch(done);
@@ -56,7 +56,7 @@ describe('Block Non-house level input', () => {
 		const geo = new PCGeocoder();
 		geo.city("Gilbert");
 		geo.state("AZ");
-		geo.zip("85234");
+		geo.zipcode("85234");
 		geo.country("United States of America");
 
 		geo.search()
@@ -75,7 +75,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
@@ -95,7 +95,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			const geo = new PCGeocoder();
 			geo.street(street);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 
 			geo.search()
 				.then((result)=>{
@@ -125,7 +125,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
@@ -149,7 +149,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
@@ -172,7 +172,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
@@ -194,7 +194,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
@@ -216,7 +216,7 @@ function testAddress(street,city,state,zip,country,expectedLat,expectedLong){
 			geo.street(street);
 			geo.city(city);
 			geo.state(state);
-			geo.zip(zip);
+			geo.zipcode(zip);
 			geo.country(country);
 
 			geo.search()
