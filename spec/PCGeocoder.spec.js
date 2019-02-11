@@ -45,7 +45,7 @@ describe('Test failures', () => {
 			.then(done.fail).catch(done);
 	});
 
-	fit('locationIQ doesnt know 123 N 114th Way', (done) => {
+	it('locationIQ doesnt know 123 N 114th Way', (done) => {
 
 		const geo = new PCGeocoder();
 		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
