@@ -59,20 +59,6 @@ describe('Test failures', () => {
 			.then(done.fail).catch(done);
 	});
 
-	it('locationIQ can do 414 N Rock St', (done) => {
-
-		const geo = new PCGeocoder();
-		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
-		geo.disableFreeServices(true);
-		geo.street("414 N Rock St");
-		geo.city("Gilbert");
-		geo.state("AZ");
-		geo.zipcode("85234");
-		geo.country("USA");
-		geo.search()
-			.then(done.fail).catch(done);
-	});
-
 })
 describe('Block Non-house level input', () => {
 	it('should NOT geocode city only', (done) => {
