@@ -5,7 +5,7 @@
     "jasmine": "^3.1.0"
   },
   "dependencies": {
-    "@panda-clouds/address-formatter": "^2.0.0",
+    "@panda-clouds/address-formatter": "^2.3.0",
     "node-geocoder": "^3.22.0"
   },
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "name": "@panda-clouds/geocoder",
   "description": "Get coordinates from addresses",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/panda-clouds/geocoder.git"
