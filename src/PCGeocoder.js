@@ -157,16 +157,19 @@ class PCGeocoder  {
 							// eslint-disable-next-line no-console
 							console.log("after first ")
 							if(!first) return; // No First Object
-							// eslint-disable-next-line no-console
-							console.log("first " + JSON.stringify(first))
 							const street = PCGeocoder.streetFromNumberAndName(first.streetNumber,first.streetName);
 							if(!street) return; // Not Specific enough
+							// eslint-disable-next-line no-console
+							console.log("yes lat long" + JSON.stringify(object.raw))
+							if(anOption.provider === "openstreetmap" || anOption.provider === "here" || anOption.provider === "locationiq"){
+								// openstreetmap always returns a house number if there is one
+								if(!first.streetNumber) return;
+							}
+							// eslint-disable-next-line no-console
+							console.log("ajiosd after first")
+
 							first.street = street;
-							// eslint-disable-next-line no-console
-							console.log("yes street")
 							if(!first || first.latitude == 0 || first.longitude == 0) return ; // not a valid place
-							// eslint-disable-next-line no-console
-							console.log("yes lat long")
 							whole = first;
 							raw = object.raw;
 							lat = first.latitude;

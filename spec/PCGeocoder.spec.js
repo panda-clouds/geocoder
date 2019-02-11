@@ -15,6 +15,65 @@ try{
 
 // 	const expectedLat = "33.358";
 // 	const expectedLong = "-111.761";
+
+describe('Test failures', () => {
+	it('openstreetmap doesnt know 3974 E Waller Ln', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'openstreetmap' }])
+		geo.disableFreeServices(true);
+		geo.street("3974 E Waller Ln");
+		geo.city("Phoenix");
+		geo.state("AZ");
+		geo.zipcode("85050");
+		geo.country("USA");
+		geo.search()
+			.then(done.fail).catch(done);
+	});
+
+	it('openstreetmap doesnt know 123 114th Way', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'here', httpAdapter: 'https', appId: process.env.HERE_APP_ID, appCode: process.env.HERE_APP_CODE}])
+		geo.disableFreeServices(true);
+		geo.street("123 N 114th Way");
+		geo.city("Scottsdale");
+		geo.state("AZ");
+		geo.zipcode("85259");
+		geo.country("USA");
+		geo.search()
+			.then(done.fail).catch(done);
+	});
+
+	fit('locationIQ doesnt know 123 N 114th Way', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
+		geo.disableFreeServices(true);
+		geo.street("32657 N 58th St");
+		geo.city("Cave Creek");
+		geo.state("AZ");
+		geo.zipcode("85331");
+		geo.country("USA");
+		geo.search()
+			.then(done.fail).catch(done);
+	});
+
+	it('locationIQ can do 414 N Rock St', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
+		geo.disableFreeServices(true);
+		geo.street("414 N Rock St");
+		geo.city("Gilbert");
+		geo.state("AZ");
+		geo.zipcode("85234");
+		geo.country("USA");
+		geo.search()
+			.then(done.fail).catch(done);
+	});
+
+})
 describe('Block Non-house level input', () => {
 	it('should NOT geocode city only', (done) => {
 
