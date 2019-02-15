@@ -67,46 +67,46 @@ class PCGeocoder  {
 	}
 
 	street(input) {
-		this.street = input;
+		this.streetValue = input;
 	}
 
 	city(input) {
-		this.city = input;
+		this.cityValue = input;
 	}
 
 	state(input) {
-		this.state = input;
+		this.stateValue = input;
 	}
 
 	country(input) {
-		this.country = input;
+		this.countryValue = input;
 	}
 
 	zipcode(input) {
-		this.zipcode = input
+		this.zipcodeValue = input
 	}
 
 	addressObjectForOptions(options){
 		const addrObject = {}
 		if(options.provider == 'openstreetmap'){
 			// here requires "c" instead of "street"
-			if(this.street)addrObject.street = this.street;
-			if(this.city)addrObject.city = this.city;
-			if(this.state)addrObject.state = this.state;
-			if(this.country)addrObject.country = this.country;
-			if(this.zipcode)addrObject.zipcode = this.zipcode;
+			if(this.streetValue)addrObject.street = this.streetValue;
+			if(this.cityValue)addrObject.city = this.cityValue;
+			if(this.stateValue)addrObject.state = this.stateValue;
+			if(this.countryValue)addrObject.country = this.countryValue;
+			if(this.zipcodeValue)addrObject.zipcode = this.zipcodeValue;
 		}else{
-			if(this.street)addrObject.address = this.street;
-			if(this.city)addrObject.city = this.city;
-			if(this.state)addrObject.state = this.state;
-			if(this.country)addrObject.country = this.country;
-			if(this.zipcode)addrObject.zipcode = this.zipcode;
+			if(this.streetValue)addrObject.address = this.streetValue;
+			if(this.cityValue)addrObject.city = this.cityValue;
+			if(this.stateValue)addrObject.state = this.stateValue;
+			if(this.countryValue)addrObject.country = this.countryValue;
+			if(this.zipcodeValue)addrObject.zipcode = this.zipcodeValue;
 		}
 		return addrObject;
 	}
 	search(){
 		let lat, long, raw, whole;
-		if(!this.street || this.street.length < 3) return Promise.reject("Street is required")
+		if(!this.streetValue || this.streetValue.length < 3) return Promise.reject("Street is required")
 		let promise = new Promise(function(resolve) {
 			resolve();
 		});
@@ -151,22 +151,26 @@ class PCGeocoder  {
 							// Saftey checks
 							// returning will move on to the next provider.
 							if(!object || object.length > 1) return; // Too many results
-							// eslint-disable-next-line no-console
-							console.log("not too many ")
+
 							const first = object[0];
-							// eslint-disable-next-line no-console
-							console.log("after first ")
 							if(!first) return; // No First Object
+
 							const street = PCGeocoder.streetFromNumberAndName(first.streetNumber,first.streetName);
 							if(!street) return; // Not Specific enough
-							// eslint-disable-next-line no-console
-							console.log("yes lat long" + JSON.stringify(object.raw))
+
 							if(anOption.provider === "openstreetmap" || anOption.provider === "here" || anOption.provider === "locationiq"){
 								// openstreetmap always returns a house number if there is one
-								if(!first.streetNumber) return;
+								if(!first.streetNumber) return; // Not Specific enough
 							}
-							// eslint-disable-next-line no-console
-							console.log("ajiosd after first")
+
+							// zipcode check
+							// this ensures that providers don't "guess" at a house in another zipcode
+							const userZip = this.zipcodeValue
+							const providerZip = PCAddressFormatter.zipcode(first.zipcode);
+							if(userZip && userZip !== providerZip){
+								// zipcode is incorrect
+								return;
+							}
 
 							first.street = street;
 							if(!first || first.latitude == 0 || first.longitude == 0) return ; // not a valid place
@@ -175,9 +179,8 @@ class PCGeocoder  {
 							lat = first.latitude;
 							long = first.longitude;
 						})
-						.catch((error)=>{
-							// eslint-disable-next-line no-console
-							console.log("Failed " + anOption.provider + ", continuing to next" + error)
+						.catch(()=>{
+
 						});
 				}
 

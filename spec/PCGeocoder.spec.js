@@ -17,6 +17,34 @@ try{
 // 	const expectedLong = "-111.761";
 
 describe('Test failures', () => {
+	it('locationiq hacks 3828 N Jokake Dr, 85251 into 3828 N Jokake Rd, 85018', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
+		geo.disableFreeServices(true);
+		geo.street("3828 N Jokake Dr");
+		geo.city("Scottsdale");
+		geo.state("AZ");
+		geo.zipcode("85251");
+		geo.country("USA");
+		geo.search()
+			.then(done.fail).catch(done);
+	});
+
+	it('test without zipcode', (done) => {
+
+		const geo = new PCGeocoder();
+		geo.primaryProviders([{ provider: 'locationiq', apiKey: process.env.LOCATION_IQ_API_KEY }])
+		geo.disableFreeServices(true);
+		geo.street("414 N Rock St");
+		geo.city("Gilbert");
+		geo.state("AZ");
+		// geo.zipcode("85234");
+		geo.country("USA");
+		geo.search()
+			.then(done).catch(done.fail);
+	});
+
 	it('openstreetmap doesnt know 3974 E Waller Ln', (done) => {
 
 		const geo = new PCGeocoder();

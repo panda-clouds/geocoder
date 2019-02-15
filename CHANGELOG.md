@@ -6,6 +6,7 @@
 ### 1.8.0
 
 - bumped formatter to 2.4.1
+- added failure if provided zipcode and user input zipcode don't match
 
 ### 1.7.0
 
