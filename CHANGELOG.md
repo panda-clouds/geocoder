@@ -3,6 +3,10 @@
 ### master
 [Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
 
+### 1.8.1
+
+- bumped formatter to 2.4.2
+
 ### 1.8.0
 
 - bumped formatter to 2.4.1
