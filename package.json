@@ -1,8 +1,7 @@
 {
   "devDependencies": {
-    "eslint": "^4.18.1",
-    "eslint-plugin-jasmine": "^2.10.1",
-    "jasmine": "^3.1.0"
+    "@panda-clouds/eslint-config-panda-clouds": "^0.3.0",
+    "jest": "^24.1.0"
   },
   "dependencies": {
     "@panda-clouds/address-formatter": "^2.4.2",
@@ -10,11 +9,11 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "jasmine ./spec/*.spec.js"
+    "test": "jest"
   },
   "name": "@panda-clouds/geocoder",
   "description": "Get coordinates from addresses",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/panda-clouds/geocoder.git"

@@ -3,6 +3,12 @@
 ### master
 [Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
 
+### 1.9.0
+
+- switched to "Panda Clouds ESLint Config"
+- switched to Jest
+- added house number verification
+
 ### 1.8.1
 
 - bumped formatter to 2.4.2
