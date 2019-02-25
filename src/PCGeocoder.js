@@ -137,125 +137,107 @@ class PCGeocoder {
 
 		return addrObject;
 	}
-	search() {
+	async search() {
 		let lat, long, raw, whole;
 
 		if (!this.streetValue || this.streetValue.length < 3) {
-			return Promise.reject('Street is required');
+			throw new Error('Street is required');
 		}
-
-		let promise = new Promise(function(resolve) {
-			resolve();
-		});
-
-		// const testProm = new Promise(function(resolve) {
-		// 	resolve();
-		// });
-		// for (var i = 0; i < currentProviders.length; i++) {
-		// 	const anOption = currentProviders[i]
-
-		// 	testProm.then(()=>{
-		// 		console.log('')
-		// 	})
-		// }
 
 		const currentProviders = this._getProviders();
 		// This function loops through all providers in order
 		// one at a time and skips the rest once it finds a lat long
 
-		for (let i = 0; i < currentProviders.length; i++) {
-			const anOption = currentProviders[i];
 
+		for (const anOption of currentProviders) {
+			const PCGeocoder_any = PCNodeGeocoder(anOption);
+			const addrObject = this.addressObjectForOptions(anOption);
 
-			promise = promise.then(() => {
-				if (!lat && !long) {
-					const PCGeocoder_any = PCNodeGeocoder(anOption);
-					const addrObject = this.addressObjectForOptions(anOption);
+			const object = await PCGeocoder_any.geocode(addrObject);
 
-					return PCGeocoder_any.geocode(addrObject)
-						.then(object => {
-							/* [{
-							'latitude':33.495999,
-							'longitude':-112.033232,
-							'country':'United States',
-							'city':'Phoenix',
-							'state':'Arizona',
-							'zipcode':'85016',
-							'streetName':'E Monterosa St',
-							'streetNumber':'2230',
-							'countryCode':'US',
-							'provider':'locationiq'
-							}]*/
+			/* [{
+			'latitude':33.495999,
+			'longitude':-112.033232,
+			'country':'United States',
+			'city':'Phoenix',
+			'state':'Arizona',
+			'zipcode':'85016',
+			'streetName':'E Monterosa St',
+			'streetNumber':'2230',
+			'countryCode':'US',
+			'provider':'locationiq'
+			}]*/
 
-							// Saftey checks
-							// returning will move on to the next provider.
-							if (!object || object.length > 1) {
-								return; // Too many results
-							}
-
-							const first = object[0];
-
-							if (!first) {
-								return; // No First Object
-							}
-
-							const street = PCGeocoder.streetFromNumberAndName(first.streetNumber, first.streetName);
-
-							if (!street) {
-								return; // Not Specific enough
-							}
-
-							if (anOption.provider !== 'mapquest') {
-								// openstreetmap always returns a house number if there is one
-								if (!first.streetNumber) {
-									return; // Not Specific enough
-								}
-
-								const userInputHouseNumber = this.streetValue.split(' ')[0];
-
-								if (first.streetNumber !== userInputHouseNumber) {
-									return; // House Numbers don't match
-								}
-							}
-
-							// zipcode check
-							// this ensures that providers don't 'guess' at a house in another zipcode
-							const userZip = this.zipcodeValue;
-							const providerZip = PCAddressFormatter.zipcode(first.zipcode);
-
-							if (userZip && userZip !== providerZip) {
-								// zipcode is incorrect
-								return;
-							}
-
-							first.street = street;
-
-							if (!first || first.latitude === 0 || first.longitude === 0) {
-								return; // not a valid place
-							}
-
-							whole = first;
-							raw = object.raw;
-							lat = first.latitude;
-							long = first.longitude;
-						})
-						.catch(() => {
-
-						});
-				}
-			});
-		}
-		/* eslint-enable no-loop-func consistent-return */
-		promise = promise.then(() => {
-			if (!lat && !long) {
-				// throw new Error('We couldn't find that address. Please double check and try again')
-				return Promise.reject('We couldn\'t find that address. Please double check and try again');
+			// Saftey checks
+			// returning will move on to the next provider.
+			if (!object || object.length > 1) {
+				continue; // Too many results
 			}
 
-			return { lat: lat, long: long, address: whole, raw: raw };
-		});
+			const first = object[0];
 
-		return promise;
+			if (!first) {
+				continue; // No First Object
+			}
+
+			const street = PCGeocoder.streetFromNumberAndName(first.streetNumber, first.streetName);
+
+			if (!street) {
+				continue; // Not Specific enough
+			}
+
+			if (anOption.provider !== 'mapquest') {
+				// openstreetmap always returns a house number if there is one
+				if (!first.streetNumber) {
+					continue; // Not Specific enough
+				}
+
+				const userInputHouseNumber = this.streetValue.split(' ')[0];
+
+				if (first.streetNumber !== userInputHouseNumber) {
+					continue; // House Numbers don't match
+				}
+			}
+
+			// zipcode check
+			// this ensures that providers don't 'guess' at a house in another zipcode
+			const userZip = this.zipcodeValue;
+			const providerZip = PCAddressFormatter.zipcode(first.zipcode);
+
+			if (userZip && userZip !== providerZip) {
+				// zipcode is incorrect
+				continue;
+			}
+
+			// city check
+			if (this.cityValue && first && first.city) {
+				const providerCity = first.city.toLowerCase().split(' ').join(''); // ' Paradise Valley ' => 'paradisevalley'
+				const userCity = this.cityValue.toLowerCase().split(' ').join('');
+
+				if (userCity !== providerCity) {
+					// city is incorrect
+					continue;
+				}
+			}
+
+
+			first.street = street;
+
+			if (!first || first.latitude === 0 || first.longitude === 0) {
+				continue; // not a valid place
+			}
+
+			whole = first;
+			raw = object.raw;
+			lat = first.latitude;
+			long = first.longitude;
+
+			return { lat: lat, long: long, address: whole, raw: raw };
+		}
+
+		if (!lat && !long) {
+			throw new Error('We couldn\'t find that address. Please double check and try again');
+		}
 	}
 }
 module.exports = PCGeocoder;

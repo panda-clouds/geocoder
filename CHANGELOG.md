@@ -3,6 +3,11 @@
 ### master
 [Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
 
+### 1.10.0
+
+- added city validation
+- migrated Promises > async/await
+
 ### 1.9.0
 
 - switched to "Panda Clouds ESLint Config"
