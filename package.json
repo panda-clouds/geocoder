@@ -9,11 +9,11 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "name": "@panda-clouds/geocoder",
   "description": "Get coordinates from addresses",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/panda-clouds/geocoder.git"

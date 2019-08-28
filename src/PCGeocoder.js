@@ -2,6 +2,8 @@
 
 const PCNodeGeocoder = require('node-geocoder');
 const PCAddressFormatter = require('@panda-clouds/address-formatter');
+const NotFoundError = 'We couldn\'t find that address. Please double check and try again';
+const RateLimitError = 'Our servers are recieving too much traffic right now, please try again in 1 minute.';
 
 class PCGeocoder {
 	constructor() {
@@ -67,6 +69,40 @@ class PCGeocoder {
 		}
 
 		return all;
+	}
+
+	generic(input) {
+		this.genericValue = input;
+	}
+
+	combined() {
+		let returnValue = '';
+
+		if (this.genericValue) {
+			returnValue += this.genericValue + ' ';
+		}
+
+		if (this.streetValue) {
+			returnValue += this.streetValue + ' ';
+		}
+
+		if (this.cityValue) {
+			returnValue += this.cityValue + ' ';
+		}
+
+		if (this.stateValue) {
+			returnValue += this.stateValue + ' ';
+		}
+
+		if (this.countryValue) {
+			returnValue += this.countryValue + ' ';
+		}
+
+		if (this.zipcodeValue) {
+			returnValue += this.zipcodeValue + ' ';
+		}
+
+		return returnValue.trim(); // .trim() removes extra spaces
 	}
 
 	street(input) {
@@ -137,8 +173,68 @@ class PCGeocoder {
 
 		return addrObject;
 	}
+
+	async find() {
+		let isRateLimitError;
+		const fullSearch = this.combined();
+
+		if (!fullSearch || fullSearch.length < 1) {
+			throw new Error('Please enter an address');
+		}
+
+		const currentProviders = this._getProviders();
+		// This function loops through all providers in order
+		// one at a time and skips the rest once it finds a lat long
+
+
+		for (const anOption of currentProviders) {
+			try {
+				const PCGeocoder_any = PCNodeGeocoder(anOption);
+				const objects = await PCGeocoder_any.geocode(fullSearch);
+
+				/* [{
+				'latitude':33.495999,
+				'longitude':-112.033232,
+				'country':'United States',
+				'city':'Phoenix',
+				'state':'Arizona',
+				'zipcode':'85016',
+				'streetName':'E Monterosa St',
+				'streetNumber':'2230',
+				'countryCode':'US',
+				'provider':'locationiq'
+				}]*/
+
+				if (objects && objects.length > 0) {
+					// we found results!
+					return objects;
+				}
+			} catch (e) {
+				// ignore throws
+
+				if (e.message === 'Response status code is 429') {
+					isRateLimitError = true;
+				}
+			}
+		}
+
+		if (isRateLimitError) {
+			throw new Error(RateLimitError);
+		} else {
+			throw new Error(NotFoundError);
+		}
+	}
+
+
+	async first() {
+		const results = await this.search();
+
+		return results;
+	}
+
+	// depritiated because "search" isn't clear that it's only one
 	async search() {
-		let lat, long, raw, whole;
+		let lat, long, raw, whole, isRateLimitError;
 
 		if (!this.streetValue || this.streetValue.length < 3) {
 			throw new Error('Street is required');
@@ -150,93 +246,103 @@ class PCGeocoder {
 
 
 		for (const anOption of currentProviders) {
-			const PCGeocoder_any = PCNodeGeocoder(anOption);
-			const addrObject = this.addressObjectForOptions(anOption);
+			try {
+				const PCGeocoder_any = PCNodeGeocoder(anOption);
+				const addrObject = this.addressObjectForOptions(anOption);
 
-			const object = await PCGeocoder_any.geocode(addrObject);
+				const object = await PCGeocoder_any.geocode(addrObject);
 
-			/* [{
-			'latitude':33.495999,
-			'longitude':-112.033232,
-			'country':'United States',
-			'city':'Phoenix',
-			'state':'Arizona',
-			'zipcode':'85016',
-			'streetName':'E Monterosa St',
-			'streetNumber':'2230',
-			'countryCode':'US',
-			'provider':'locationiq'
-			}]*/
+				/* [{
+				'latitude':33.495999,
+				'longitude':-112.033232,
+				'country':'United States',
+				'city':'Phoenix',
+				'state':'Arizona',
+				'zipcode':'85016',
+				'streetName':'E Monterosa St',
+				'streetNumber':'2230',
+				'countryCode':'US',
+				'provider':'locationiq'
+				}]*/
 
-			// Saftey checks
-			// returning will move on to the next provider.
-			if (!object || object.length > 1) {
-				continue; // Too many results
-			}
+				// Saftey checks
+				// returning will move on to the next provider.
+				if (!object || object.length > 1) {
+					continue; // Too many results
+				}
 
-			const first = object[0];
+				const first = object[0];
 
-			if (!first) {
-				continue; // No First Object
-			}
+				if (!first) {
+					continue; // No First Object
+				}
 
-			const street = PCGeocoder.streetFromNumberAndName(first.streetNumber, first.streetName);
+				const street = PCGeocoder.streetFromNumberAndName(first.streetNumber, first.streetName);
 
-			if (!street) {
-				continue; // Not Specific enough
-			}
-
-			if (anOption.provider !== 'mapquest') {
-				// openstreetmap always returns a house number if there is one
-				if (!first.streetNumber) {
+				if (!street) {
 					continue; // Not Specific enough
 				}
 
-				const userInputHouseNumber = this.streetValue.split(' ')[0];
+				if (anOption.provider !== 'mapquest') {
+					// openstreetmap always returns a house number if there is one
+					if (!first.streetNumber) {
+						continue; // Not Specific enough
+					}
 
-				if (first.streetNumber !== userInputHouseNumber) {
-					continue; // House Numbers don't match
+					const userInputHouseNumber = this.streetValue.split(' ')[0];
+
+					if (first.streetNumber !== userInputHouseNumber) {
+						continue; // House Numbers don't match
+					}
 				}
-			}
 
-			// zipcode check
-			// this ensures that providers don't 'guess' at a house in another zipcode
-			const userZip = this.zipcodeValue;
-			const providerZip = PCAddressFormatter.zipcode(first.zipcode);
+				// zipcode check
+				// this ensures that providers don't 'guess' at a house in another zipcode
+				const userZip = this.zipcodeValue;
+				const providerZip = PCAddressFormatter.zipcode(first.zipcode);
 
-			if (userZip && userZip !== providerZip) {
-				// zipcode is incorrect
-				continue;
-			}
-
-			// city check
-			if (this.cityValue && first && first.city) {
-				const providerCity = first.city.toLowerCase().split(' ').join(''); // ' Paradise Valley ' => 'paradisevalley'
-				const userCity = this.cityValue.toLowerCase().split(' ').join('');
-
-				if (userCity !== providerCity) {
-					// city is incorrect
+				if (userZip && userZip !== providerZip) {
+					// zipcode is incorrect
 					continue;
 				}
+
+				// city check
+				if (this.cityValue && first && first.city) {
+					const providerCity = first.city.toLowerCase().split(' ').join(''); // ' Paradise Valley ' => 'paradisevalley'
+					const userCity = this.cityValue.toLowerCase().split(' ').join('');
+
+					if (userCity !== providerCity) {
+						// city is incorrect
+						continue;
+					}
+				}
+
+
+				first.street = street;
+
+				if (!first || first.latitude === 0 || first.longitude === 0) {
+					continue; // not a valid place
+				}
+
+				whole = first;
+				raw = object.raw;
+				lat = first.latitude;
+				long = first.longitude;
+
+				return { lat: lat, long: long, address: whole, raw: raw };
+			} catch (e) {
+				// ignore throws
+
+				if (e.message === 'Response status code is 429') {
+					isRateLimitError = true;
+				}
 			}
-
-
-			first.street = street;
-
-			if (!first || first.latitude === 0 || first.longitude === 0) {
-				continue; // not a valid place
-			}
-
-			whole = first;
-			raw = object.raw;
-			lat = first.latitude;
-			long = first.longitude;
-
-			return { lat: lat, long: long, address: whole, raw: raw };
 		}
 
-		if (!lat && !long) {
-			throw new Error('We couldn\'t find that address. Please double check and try again');
+		if (isRateLimitError) {
+			throw new Error(RateLimitError);
+		} else {
+			throw new Error(NotFoundError);
 		}
 	}
 }

@@ -3,6 +3,11 @@
 ### master
 [Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
 
+### 1.11.0
+- depreciated "search" in favor of "first"
+- added "find"
+- added catch for clear error handling of "429 Too Many Requests"
+
 ### 1.10.0
 
 - added city validation
