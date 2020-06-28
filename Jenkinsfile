@@ -9,6 +9,7 @@ pipeline {
     HERE_APP_CODE = credentials('geocoder-here-app-code')
     LOCATION_IQ_API_KEY = credentials('geocoder-location-iq-api-key')
     MAP_QUEST_API_KEY = credentials('geocoder-map-quest-api-key')
+    GOOGLE_API_KEY = credentials('geocoder-google-api-key')
   }
   stages {
     stage('Test') {
