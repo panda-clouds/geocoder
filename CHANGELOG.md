@@ -3,6 +3,9 @@
 ### master
 [Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
 
+### 1.12.0
+- Added google support by porting administrative area to state
+
 ### 1.11.0
 - depreciated "search" in favor of "first"
 - added "find"
