@@ -205,8 +205,57 @@ class PCGeocoder {
 				'provider':'locationiq'
 				}]*/
 
+				/*
+				Google response
+				[
+  {
+    "formattedAddress": "8183 E Lowry Blvd, Denver, CO 80230, USA",
+    "latitude": 39.7181746,
+    "longitude": -104.8935301,
+    "extra": {
+      "googlePlaceId": "Eig4MTgzIEUgTG93cnkgQmx2ZCwgRGVudmVyLCBDTyA4MDIzMCwgVVNBIhsSGQoUChIJ9SaJxVd8bIcR30cmzkDjDHUQ9z8",
+      "confidence": 0.9,
+      "premise": null,
+      "subpremise": null,
+      "neighborhood": "East",
+      "establishment": null
+    },
+    "administrativeLevels": {
+      "level2long": "Denver County",
+      "level2short": "Denver County",
+      "level1long": "Colorado",
+      "level1short": "CO"
+    },
+    "streetNumber": "8183",
+    "streetName": "East Lowry Boulevard",
+    "city": "Denver",
+    "country": "United States",
+    "countryCode": "US",
+    "zipcode": "80230",
+    "provider": "google"
+  }
+]*/
+
 				if (objects && objects.length > 0) {
 					// we found results!
+
+					// Google is a giant turd and return "state" as administrativeLevels
+					for (let i = objects.length - 1; i >= 0; i--) {
+						const aLocation = objects[i];
+
+						if (aLocation.provider === 'google' && !aLocation.state) {
+							if (aLocation.administrativeLevels.level1short) {
+								aLocation.state = aLocation.administrativeLevels.level1short;
+							} else if (aLocation.administrativeLevels.level1long) {
+								aLocation.state = aLocation.administrativeLevels.level1short;
+							} else if (aLocation.administrativeLevels.level2short) {
+								aLocation.state = aLocation.administrativeLevels.level1short;
+							} else if (aLocation.administrativeLevels.level2long) {
+								aLocation.state = aLocation.administrativeLevels.level1short;
+							}
+						}
+					}
+
 					return objects;
 				}
 			} catch (e) {

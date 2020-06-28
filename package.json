@@ -8,7 +8,7 @@
     "node-geocoder": "^3.22.0"
   },
   "scripts": {
-    "pretest": "eslint .",
+    "pretest": "eslint --fix .",
     "test": "jest --runInBand"
   },
   "name": "@panda-clouds/geocoder",

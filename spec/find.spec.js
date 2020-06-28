@@ -186,6 +186,24 @@ function testAddress(genericValue, expectedLat, expectedLong) {
 			expect(result.longitude.toString()).toContain(expectedLong);
 		});
 
+		it('google', async () => {
+			expect.assertions(4);
+
+			const geo = new PCGeocoder();
+
+			// we are testing only the here service
+			geo.primaryProviders([{ provider: 'google', apiKey: process.env.GOOGLE_API_KEY, httpAdapter: 'request', formatter: null }]);
+			geo.disableFreeServices(true);
+			geo.generic(genericValue);
+
+			const results = await geo.find();
+			const result = results[0];
+
+			expect(result).toBeDefined();
+			expect(result.state).toBeDefined();
+			expect(result.latitude.toString()).toContain(expectedLat);
+			expect(result.longitude.toString()).toContain(expectedLong);
+		});
 
 		it('here', async () => {
 			expect.assertions(3);

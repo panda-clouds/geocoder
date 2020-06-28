@@ -60,26 +60,27 @@ describe('test failures', () => {
 		expect(String(result.long)).toContain('-111.761');
 	});
 
-	it('openstreetmap doesnt know 3974 E Waller Ln', async () => {
-		expect.assertions(1);
-		const geo = new PCGeocoder();
+	// openstreetmap fixed this
+	// it('openstreetmap doesnt know 3974 E Waller Ln', async () => {
+	// 	expect.assertions(1);
+	// 	const geo = new PCGeocoder();
 
-		geo.primaryProviders([{ provider: 'openstreetmap' }]);
-		geo.disableFreeServices(true);
-		geo.street('3974 E Waller Ln');
-		geo.city('Phoenix');
-		geo.state('AZ');
-		geo.zipcode('85050');
-		geo.country('USA');
+	// 	geo.primaryProviders([{ provider: 'openstreetmap' }]);
+	// 	geo.disableFreeServices(true);
+	// 	geo.street('3974 E Waller Ln');
+	// 	geo.city('Phoenix');
+	// 	geo.state('AZ');
+	// 	geo.zipcode('85050');
+	// 	geo.country('USA');
 
-		try {
-			await geo.search();
+	// 	try {
+	// 		await geo.search();
 
-			expect(1).toBe(2);
-		} catch (error) {
-			expect(error.message).toBe(NotFoundError);
-		}
-	});
+	// 		expect(1).toBe(2);
+	// 	} catch (error) {
+	// 		expect(error.message).toBe(NotFoundError);
+	// 	}
+	// });
 
 	it('openstreetmap doesnt know 123 114th Way', async () => {
 		expect.assertions(1);
