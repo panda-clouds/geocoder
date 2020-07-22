@@ -1,7 +1,7 @@
 ## PCGeocoder Changelog
 
-### master
-[Full Changelog](https://github.com/panda-clouds/address-formatter/compare/2.0.0...master)
+### 1.13.0
+- Added requiresFullAddress and defaulted to true
 
 ### 1.12.0
 - Added google support by porting administrative area to state

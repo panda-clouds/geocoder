@@ -7,7 +7,8 @@ const RateLimitError = 'Our servers are recieving too much traffic right now, pl
 
 class PCGeocoder {
 	constructor() {
-		// Empty Constructor
+		// Set defaults
+		this.fullAddressValue = true
 	}
 	static streetFromNumberAndName(number, name) {
 		let best = '';
@@ -36,6 +37,12 @@ class PCGeocoder {
 	backupProviders(input) {
 		// geo.backupProviders( [{provider:'locationiq',apiKey:'abc123'},{provider:'google',apiKey:'def345'}] )
 		this.backupProvidersArray = input;
+	}
+
+
+	setRequiresFullAddress(input) {
+		// geo.backupProviders( [{provider:'locationiq',apiKey:'abc123'},{provider:'google',apiKey:'def345'}] )
+		this.requiresFullAddress = input;
 	}
 
 	// Used for:
@@ -235,6 +242,15 @@ class PCGeocoder {
     "provider": "google"
   }
 ]*/
+				if(this.requiresFullAddress){
+					// filter out the incomplete addresses
+					objects = objects.filter((address) =>{
+						if(address.streetNumber){
+							return true
+						}
+						return false
+					})
+				}
 
 				if (objects && objects.length > 0) {
 					// we found results!
